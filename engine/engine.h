@@ -8,6 +8,7 @@
 #include "render.h"
 #include "map.h"
 #include "state.h"
+#include "game.h"
 #include "savedata.h"
 #include "object.h"
 

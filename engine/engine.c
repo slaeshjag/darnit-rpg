@@ -14,13 +14,10 @@ int rpg_init() {
 	if (!map_init())
 		return 0;
 	
-	rpg.object.entries = 0;
-	rpg.object.entry = NULL;
-	rpg.object.bbox = NULL;
-	
+	object_prepare();
+
 	rpg.state.state = RPG_STATE_DUMMY;
 	state_set(RPG_STATE_NEW_GAME);
-//	map_load(d_stringtable_entry(rpg.conf.conf, "New_game"));
 
 	return 1;
 }

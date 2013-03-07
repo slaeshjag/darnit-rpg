@@ -1,6 +1,38 @@
 #include "engine.h"
 
 
+int object_prepare() {
+	rpg.object.entry = NULL;
+	rpg.object.entries = 0;
+	rpg.object.bbox = NULL;
+	rpg.object.aux_lib = NULL;
+
+	rpg.object.main_lib = d_dynlib_open(CONFIG("Main_scriptlib"));
+
+	return 1;
+}
+
+
+int object_loadcode() {
+	if (rpg.object.aux_lib)
+		d_dynlib_close(rpg.object.aux_lib);
+	rpg.object.aux_lib = d_dynlib_open(d_map_prop(rpg.map.map->prop, "auxscript"));
+	return 1;
+}
+
+
+void *object_resolve(int obj) {
+	const char *sym_n;
+	void *sym;
+
+	sym_n = d_map_prop(rpg.map.map->object[obj].ref, "handler");
+	sym = d_dynlib_get(rpg.object.aux_lib, sym_n);
+	if (!sym)
+		sym = d_dynlib_get(rpg.object.main_lib, sym_n);
+	return sym;
+}
+
+
 int object_init() {
 	int i, objects, j, x, y, l, dir;
 	const char *sprite;
@@ -28,6 +60,8 @@ int object_init() {
 			rpg.object.entry[j].x = x;
 			rpg.object.entry[j].y = y;
 			rpg.object.entry[j].layer = l;
+			rpg.object.entry[j].data.pointer = NULL;
+			rpg.object.entry[j].data.num = 0;
 
 			sprite = MAP_OBJ_PROP("sprite", i);
 			dir = atoi(MAP_OBJ_PROP("sprite_dir", i));
@@ -35,6 +69,11 @@ int object_init() {
 				rpg.object.entry[j].sprite = d_sprite_load(sprite, dir, DARNIT_PFORMAT_RGB5A1);
 			else
 				rpg.object.entry[j].sprite = NULL;
+
+			rpg.object.entry[j].handler = object_resolve(i);
+			if (rpg.object.entry[j].handler)
+				rpg.object.entry[j].handler(OBJECT_MSG_INIT, &rpg.object.entry[j]);
+			
 			j++;
 		}
 	}
