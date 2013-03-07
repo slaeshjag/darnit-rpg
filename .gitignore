@@ -1,5 +1,9 @@
-./rpg-darnit
+./darnit-rpg
 *.swp
 *.o
 *.log
 *.tmp
+*.stz
+*.ldi
+./meta
+*.script
