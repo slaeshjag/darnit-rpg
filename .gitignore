@@ -1,0 +1,5 @@
+./rpg-darnit
+*.swp
+*.o
+*.log
+*.tmp
