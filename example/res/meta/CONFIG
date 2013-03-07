@@ -1,0 +1,8 @@
+First_splash			MAIN_MENU
+Title				TestRPG
+Icon				NULL
+New_game_map			meta/newgame.ldmz
+Fade_time			200
+
+Save_bank_size			16
+Save_banks			1
